@@ -1,0 +1,44 @@
+---
+title: Commit Summary
+icon: file-text
+---
+## Commit Summary
+
+**Commit:** c9f295e9daaf5011465029f1366003f72498805e  
+**Author:** Sam Solano  
+**Date:** February 11, 2026  
+**Message:** "real not mocked updates"
+
+### Changes
+
+The commit modified `app/features/MCP/updates.py`, replacing mocked test logic with actual implementation calls in the `updates_pipeline_streaming` function.
+
+**What changed:**
+
+<Callout type="info">
+This commit transitions the codebase from testing mode to production-ready implementation.
+</Callout>
+
+- **Removed:** Mock sleep delays and fake result loading
+
+<CodeSnippet language="python" title="Removed mock code">
+{`await asyncio.sleep(2)
+# Loading from fake_result.json`}
+</CodeSnippet>
+
+- **Enabled:** Real pipeline execution by uncommenting actual function calls:
+
+<CodeSnippet language="python" title="Activated pipeline functions">
+{`pr_info_extraction()  # Extracts PR information
+change_analyzer()      # Analyzes code changes
+download_documentation_repo()  # Downloads documentation
+embedder()            # Embeds documentation
+detector()            # Detects impact
+generator()           # Generates updates`}
+</CodeSnippet>
+
+<Callout type="success">
+**Impact:** The MCP updates pipeline now runs actual operations instead of simulated delays and returns real results instead of loading from a test fixture file.
+</Callout>
+
+**Stats:** 10 insertions, 17 deletions across 1 file

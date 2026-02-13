@@ -31,7 +31,7 @@ Each update is tagged with one of three status badges:
 - **Deleted**: Code removed from the codebase
 
 <Callout type="info">
-The status badge appears in the top-right corner of each update card with color-coded styling (yellow for updated, green for new, red for deleted).
+Status badges use color-coded styling to indicate change types (yellow for updated, green for new, red for deleted).
 </Callout>
 
 ## Reviewing Updates
@@ -86,6 +86,17 @@ For **new** items:
 2. The system calls the `/generate-docs` endpoint with the unique identifier (UID) of the new code
 3. A diff view shows the newly generated documentation compared to an empty baseline
 
+### Deleting Updates
+
+You can remove updates from the list that you don't want to process:
+
+1. Click the delete button (Trash2 icon) on any update card
+2. The update will be removed from the list immediately
+
+<Callout type="warning">
+Deleting an update removes it from your pending updates list. This action helps you manage which changes require documentation updates.
+</Callout>
+
 
 ## Workflow Example
 
@@ -108,7 +119,7 @@ Review the line-by-line diff showing exactly what changed in the documentation.
 </Step>
 
 <Step title="Save Changes">
-Click the "Save current page" button in the header to persist the regenerated documentation changes to the system.
+Click the save button in the header to persist the regenerated documentation changes to the system.
 </Step>
 
 </Steps>
