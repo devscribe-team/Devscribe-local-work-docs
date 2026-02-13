@@ -18,8 +18,8 @@
             {
               "group": "Quickstart",
               "pages": [
-              "new-new",
                 "quickstart/guide",
+                "new-user-guide",
                 "new-doc",
                 "basic-tech-summary",
                 "quickstart/docs-json",

@@ -1,0 +1,483 @@
+---
+title: User Guide
+icon: book
+---
+# Devscribe Frontend - Internal Developer Guide
+
+## Overview
+
+Devscribe Frontend is a Next.js 15-based web application that provides documentation generation and editing capabilities. The application features a rich text editor using TiptapJS, markdown/MDX support, and integrates with Supabase for backend services and authentication.
+
+## Tech Stack
+
+### Core Framework
+- **Next.js 15.3.8** - React framework with App Router
+- **React 19.0.0** - UI library
+- **TypeScript 5** - Type safety
+- **Tailwind CSS 4** - Styling framework
+
+### Key Libraries
+- **TiptapJS** (@tiptap/*) - Rich text editing with Prosemirror
+- **Supabase** (@supabase/supabase-js) - Backend, database, and authentication
+- **Radix UI** (@radix-ui/*) - Accessible UI primitives
+- **CodeMirror** (@codemirror/*) - Code editor components
+- **Shiki** - Syntax highlighting
+- **Content Collections** - MDX content management
+- **React Hook Form** + **Zod** - Form handling and validation
+- **Framer Motion** - Animations
+- **Lucide React** - Icon library
+
+### Development Tools
+- **Biome** - Linting and formatting
+- **ESLint** - Additional linting
+- **Prettier** - Code formatting
+
+## Project Structure
+
+<CodeSnippet language="bash" title="Project Structure">
+{`devscribe-frontend/
+├── src/
+│   ├── app/                      # Next.js App Router
+│   │   ├── (auth)/              # Authentication routes (login, signup)
+│   │   ├── (dashboard)/         # Protected dashboard routes
+│   │   │   ├── dashboard/       # Main dashboard
+│   │   │   ├── editor/          # Documentation editor
+│   │   │   ├── editor-old/      # Legacy editor
+│   │   │   ├── generate-docs/   # Documentation generation
+│   │   │   ├── settings/        # User settings
+│   │   │   ├── analytics/       # Analytics dashboard
+│   │   │   └── updates/         # Updates/changelog
+│   │   ├── (landing)/           # Public landing pages
+│   │   │   ├── blog/           # Blog posts
+│   │   │   ├── docs/           # Public documentation
+│   │   │   ├── features/       # Features page
+│   │   │   ├── enterprise/     # Enterprise page
+│   │   │   └── ...             # Other marketing pages
+│   │   ├── api/                # API routes
+│   │   ├── layout.tsx          # Root layout
+│   │   └── page.tsx            # Home page
+│   ├── components/             # Reusable components
+│   │   ├── block-editor/       # Block-based editor components
+│   │   ├── dashboard/          # Dashboard-specific components
+│   │   ├── layout/             # Layout components
+│   │   ├── mdx/                # MDX rendering components
+│   │   ├── mdx-landing/        # Landing page MDX components
+│   │   ├── tags/               # Tag components
+│   │   ├── tiptap-extension/   # Custom Tiptap extensions
+│   │   ├── tiptap-icons/       # Editor icons
+│   │   ├── tiptap-node/        # Custom Tiptap nodes
+│   │   ├── tiptap-templates/   # Editor templates
+│   │   ├── tiptap-ui/          # Tiptap UI components
+│   │   ├── tiptap-ui-primitive/# Base Tiptap primitives
+│   │   ├── tree/               # Tree view components
+│   │   └── ui/                 # Shadcn/UI components
+│   ├── features/               # Feature modules
+│   │   ├── auth/              # Authentication logic
+│   │   ├── database/          # Database utilities
+│   │   ├── editing/           # Editing features
+│   │   ├── editor/            # Editor features
+│   │   ├── generation/        # Doc generation features
+│   │   ├── generation-new/    # New generation features
+│   │   ├── landing/           # Landing page features
+│   │   └── mdx/               # MDX features
+│   ├── hooks/                 # Custom React hooks
+│   ├── lib/                   # Utility libraries
+│   │   ├── supabase.ts       # Supabase client setup
+│   │   ├── supabase-app.ts   # App-specific Supabase utils
+│   │   ├── tiptap-utils.ts   # Tiptap utilities
+│   │   ├── mdx-tiptap-parser.ts # MDX/Tiptap conversion
+│   │   └── utils.ts          # General utilities
+│   ├── middleware.ts          # Next.js middleware (auth)
+│   └── styles/                # Global styles
+├── public/                     # Static assets
+├── supabase/                   # Supabase functions
+├── tests/                      # Test files
+├── next.config.ts             # Next.js configuration
+├── tsconfig.json              # TypeScript configuration
+├── tailwind.config.js         # Tailwind configuration
+├── biome.json                 # Biome configuration
+├── components.json            # Shadcn/UI config
+└── package.json               # Dependencies and scripts`}
+</CodeSnippet>
+
+## Getting Started
+
+### Prerequisites
+
+<Callout type="info">
+- Node.js 24.x or higher
+- npm, pnpm, or bun package manager
+- Access to Supabase project
+</Callout>
+
+### Environment Variables
+
+<Callout type="warning">
+Create a `.env.local` file in the root directory with the following required variables:
+</Callout>
+
+<CodeSnippet language="bash" title=".env.local">
+{`# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+
+# Backend Configuration
+NEXT_PUBLIC_DEVSCRIBE_BACKEND_URL=http://127.0.0.1:8000
+
+# Google Cloud Storage (for file uploads)
+# Add GCS credentials as needed
+
+# Vercel (for deployments)
+# Add Vercel-specific environment variables as needed`}
+</CodeSnippet>
+
+<Callout type="danger">
+**Important Notes:**
+- For local development, `NEXT_PUBLIC_DEVSCRIBE_BACKEND_URL` MUST be `http://127.0.0.1:8000` (not `localhost`) for OAuth to work correctly
+- All `NEXT_PUBLIC_*` variables are exposed to the browser
+- Service role keys should only be used in server-side code
+</Callout>
+
+### Installation
+
+<CodeGroup>
+  <CodeSnippet language="bash" title="npm">
+    npm install
+  </CodeSnippet>
+  
+  <CodeSnippet language="bash" title="pnpm">
+    pnpm install
+  </CodeSnippet>
+  
+  <CodeSnippet language="bash" title="bun">
+    bun install
+  </CodeSnippet>
+</CodeGroup>
+
+### Development
+
+<CodeSnippet language="bash" title="Development Commands">
+{`# Start development server (port 3000)
+npm run dev
+
+# Start with Turbopack (faster)
+npm run dev:turbo
+
+# Start with clean build cache
+npm run dev:clean`}
+</CodeSnippet>
+
+<Callout type="success">
+The application will be available at `http://localhost:3000`
+</Callout>
+
+### Building
+
+<CodeSnippet language="bash" title="Build Commands">
+{`# Production build
+npm run build
+
+# Start production server
+npm start
+
+# Analyze bundle size
+npm run analyze`}
+</CodeSnippet>
+
+### Code Quality
+
+<CodeSnippet language="bash" title="Code Quality Commands">
+{`# Lint code
+npm run lint
+
+# Fix linting issues
+npm run lint:fix
+
+# Type checking
+npm run typecheck
+# or
+npm run type
+
+# Format code with Biome
+npm run format
+
+# Format code with Prettier
+npm run format:fix
+
+# Run all checks (CI)
+npm run ci:check`}
+</CodeSnippet>
+
+### Cleaning
+
+<CodeSnippet language="bash" title="Clean Command">
+{`# Remove build artifacts and dependencies
+npm run clean`}
+</CodeSnippet>
+
+## Architecture Overview
+
+### Authentication & Authorization
+
+The application uses a custom JWT-based authentication system:
+
+- **Middleware** (`src/middleware.ts:1-77`) - Handles route protection and redirects
+- **Protected Routes**: `/dashboard/*`, `/editor/*`, `/generate-docs/*`, `/settings/*`, `/analytics/*`, `/updates/*`
+- **Auth Routes**: `/login`, `/signup`
+- **Session Cookie**: `jwt_session` - validated on each request
+- **Token Expiry**: Checked by decoding JWT and comparing `exp` timestamp
+
+### Route Structure
+
+The application uses Next.js 15 App Router with route groups:
+
+<Callout type="info">
+**1. Public Routes (`(landing)`)**
+- Homepage, features, blog, documentation
+- Marketing and informational pages
+- Accessible without authentication
+</Callout>
+
+<Callout type="info">
+**2. Protected Routes (`(dashboard)`)**
+- Requires valid JWT session
+- Redirects to `/login` if unauthenticated
+- Includes editor, doc generation, settings, analytics
+</Callout>
+
+<Callout type="info">
+**3. Auth Routes (`(auth)`)**
+- Login and signup pages
+- Redirects to `/dashboard` if already authenticated
+</Callout>
+
+### Key Features
+
+#### 1. Documentation Editor
+- Built with TiptapJS and Prosemirror
+- Rich text editing with markdown support
+- Custom nodes and extensions
+- Real-time collaboration capabilities
+- MDX rendering and parsing
+
+#### 2. Documentation Generation
+- AI-powered documentation generation
+- Repository integration
+- Context file selection
+- Prompt-based generation
+- Vercel deployment integration
+
+#### 3. MDX/Markdown Support
+- Content Collections for static content
+- MDX components for landing pages
+- Code syntax highlighting with Shiki
+- Custom rehype/remark plugins
+
+#### 4. Team Management
+- Team member invitations
+- Role-based permissions
+- Multi-team support
+
+## Component Organization
+
+### UI Components (`src/components/ui/`)
+Shadcn/UI components built on Radix UI primitives - highly customizable, accessible components
+
+### Tiptap Components (`src/components/tiptap-*`)
+- **tiptap-extension**: Custom extensions for the editor
+- **tiptap-node**: Custom node types
+- **tiptap-ui**: Editor toolbar and controls
+- **tiptap-icons**: SVG icons for editor actions
+- **tiptap-templates**: Pre-built content templates
+
+### Layout Components (`src/components/layout/`)
+Navigation, headers, footers, and page layout structures
+
+### Feature Components
+Located in `src/features/[feature-name]/` - encapsulated feature logic
+
+## Custom Hooks
+
+<Callout type="tip">
+The application includes several custom hooks in `src/hooks/`:
+
+- **use-tiptap-editor.ts** - Initialize Tiptap editor instances
+- **use-local-storage.ts** - Persistent local storage state
+- **use-mobile.ts** - Mobile breakpoint detection
+- **use-sidebar-state.ts** - Sidebar state management
+- **use-window-size.ts** - Responsive window dimensions
+- **use-scrolling.ts** - Scroll position tracking
+- **use-menu-navigation.ts** - Keyboard navigation for menus
+- **use-cursor-visibility.ts** - Track cursor visibility
+- **use-element-rect.ts** - Element position/size tracking
+</Callout>
+
+## API Routes
+
+API routes are located in `src/app/api/`:
+
+- **Teams API**: `/api/teams/[teamId]/members` - Team member management
+- **Invitations API**: `/api/teams/[teamId]/invitations` - Team invitations
+- **Preview API**: `/api/preview-request` - Documentation preview requests
+
+## Database Integration
+
+The application uses Supabase for:
+- User authentication and management
+- Database storage
+- Real-time subscriptions
+- File storage (via Google Cloud Storage integration)
+
+### Supabase Clients
+
+<Callout type="info">
+Two clients are configured in `src/lib/supabase.ts:1-45`:
+- **supabase** - Client-side with anon key
+- **supabaseAdmin** - Server-side with service role key (elevated permissions)
+</Callout>
+
+## Deployment
+
+### Docker
+
+<CodeSnippet language="bash" title="Docker Commands">
+{`# Build Docker image
+docker build -t devscribe-frontend .
+
+# Run container
+docker run -p 3000:3000 devscribe-frontend
+
+# Using docker-compose
+docker-compose up`}
+</CodeSnippet>
+
+### Vercel
+
+<Callout type="success">
+The application is optimized for Vercel deployment:
+- Configure environment variables in Vercel dashboard
+- Automatic deployments from Git branches
+- Preview deployments for pull requests
+</Callout>
+
+### Manual Deployment
+
+<CodeSnippet language="bash" title="Manual Deployment">
+{`# Build production bundle
+npm run build
+
+# Start production server
+npm start`}
+</CodeSnippet>
+
+<Callout type="info">
+The server listens on port 3000 by default.
+</Callout>
+
+## Development Best Practices
+
+### Code Standards (from CLAUDE.md)
+
+<Callout type="tip">
+1. **Simplicity First** - Solve problems as simply as possible without adding unnecessary complexity
+2. **Modular Architecture** - Break code into logical files and components
+3. **Type Safety** - Always define proper TypeScript types and interfaces
+4. **Code Comments** - Comment complex logic and provide section headers
+5. **Minimal UI** - Keep interfaces clean and uncluttered
+6. **Testing** - Unit test non-trivial logic and include debugging output
+</Callout>
+
+### Styling Guidelines
+- Use Tailwind CSS utility classes
+- Follow existing component patterns
+- Leverage Shadcn/UI components where possible
+- Maintain dark mode compatibility with next-themes
+
+### Git Workflow
+- Main branch: `staging`
+- Current branch: `mcp-prototyping`
+- Create feature branches from staging
+- Test thoroughly before merging
+
+## Troubleshooting
+
+### Common Issues
+
+#### OAuth Doesn't Work
+
+<Callout type="error">
+**Problem**: Google/GitHub OAuth fails to authenticate
+
+**Solution**: Ensure `NEXT_PUBLIC_DEVSCRIBE_BACKEND_URL=http://127.0.0.1:8000` in your `.env.local` file. It must be exactly this address (not `localhost`), as the backend is pedantic about the URL format.
+</Callout>
+
+#### Build Errors
+
+<CodeSnippet language="bash" title="Fix Build Errors">
+{`# Clear Next.js cache
+rm -rf .next && npm run build
+
+# Clear node_modules
+npm run clean && npm install`}
+</CodeSnippet>
+
+#### Type Errors
+
+<CodeSnippet language="bash" title="Check Types">
+{`# Run type checking
+npm run typecheck`}
+</CodeSnippet>
+
+<Callout type="tip">
+Check for missing type definitions
+</Callout>
+
+#### Environment Variables Not Loading
+
+<Callout type="warning">
+- Restart development server after changing `.env.local`
+- Verify variable names match the source code
+- Check for typos in variable names
+</Callout>
+
+## Performance Considerations
+
+<Callout type="tip">
+- **Bundle Analysis**: Use `npm run analyze` to identify large dependencies
+- **Code Splitting**: Next.js automatically splits routes
+- **Image Optimization**: Use Next.js Image component for images from Unsplash
+- **Lazy Loading**: Components are lazy-loaded where appropriate
+</Callout>
+
+## Security Notes
+
+<Callout type="danger">
+- Never commit `.env` files to version control
+- Service role keys should only be used in API routes
+- Middleware validates JWT tokens on each protected request
+- CORS is configured for localhost development
+- ESLint warnings are disabled during builds (consider enabling for production)
+</Callout>
+
+## Additional Resources
+
+- **Next.js Documentation**: https://nextjs.org/docs
+- **TiptapJS Documentation**: https://tiptap.dev/docs
+- **Supabase Documentation**: https://supabase.io/docs
+- **Tailwind CSS**: https://tailwindcss.com/docs
+- **Radix UI**: https://www.radix-ui.com/primitives
+
+## Support
+
+For questions or issues:
+1. Check existing documentation in the repository
+2. Review the CLAUDE.md file for coding guidelines
+3. Contact the development team
+
+---
+
+**Last Updated**: February 2026
+**Repository**: devscribe-team/devscribe-frontend
+**Node Version**: 24.x
+**Next.js Version**: 15.3.8

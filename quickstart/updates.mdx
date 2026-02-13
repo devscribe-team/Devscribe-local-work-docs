@@ -24,14 +24,14 @@ The Updates page uses a split-pane interface:
 
 ## Understanding Update Types
 
-Each update is tagged with one of three status badges:
+Each update represents one of three types of changes detected in your codebase:
 
 - **Updated**: Existing documentation affected by code changes
 - **New**: New code additions that require documentation
 - **Deleted**: Code removed from the codebase
 
 <Callout type="info">
-Status badges use color-coded styling to indicate change types (yellow for updated, green for new, red for deleted).
+The update type is tracked internally by the system and determines which action buttons are available (Regenerate for updated/deleted items, Generate for new items).
 </Callout>
 
 ## Reviewing Updates
@@ -55,7 +55,6 @@ Each update card displays:
 - **Title**: Function or section name extracted from frontmatter
 - **Category**: Derived from the title (text before the first dot)
 - **Last Updated**: Timestamp of when the change was detected
-- **Status Badge**: Visual indicator of change type
 
 ## Taking Action on Updates
 
