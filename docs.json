@@ -18,6 +18,7 @@
             {
               "group": "Quickstart",
               "pages": [
+              "new-new",
                 "quickstart/guide",
                 "new-doc",
                 "basic-tech-summary",

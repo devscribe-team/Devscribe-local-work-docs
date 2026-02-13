@@ -1,0 +1,354 @@
+---
+title: Repository Overview
+icon: book
+---
+---
+
+# Devscribe Frontend - Technical Summary
+
+## Overview
+
+**Devscribe** is an AI-native documentation automation platform that helps teams generate, manage, and deploy professional API documentation with minimal manual effort. This is the Next.js frontend application that provides the user interface and core features.
+
+**Repository**: devscribe-frontend  
+**Framework**: Next.js 15.3.8 (App Router)  
+**Language**: TypeScript (618 TypeScript files)  
+**Main Branch**: staging
+
+---
+
+## Architecture
+
+### Application Structure
+
+The application follows Next.js 15 App Router conventions with route groups:
+
+**Route Groups:**
+- **(landing)** - Public marketing pages, blog, and documentation
+- **(dashboard)** - Authenticated user features
+- **(auth)** - Authentication flows
+
+### Key Directories
+
+<CodeSnippet language="bash" title="Project Structure">
+{`src/
+├── app/              # Next.js routes and pages
+├── components/       # Reusable UI components (block-editor, tiptap-*, ui, tree)
+├── features/         # Feature-specific modules (auth, database, editing, generation, mdx)
+├── hooks/            # Custom React hooks (14 hooks including tiptap, storage, mobile)
+├── lib/              # Utilities (supabase, tiptap-utils, mdx-parser)
+├── styles/           # Global styles
+└── middleware.ts     # Route protection and auth middleware`}
+</CodeSnippet>
+
+---
+
+## Core Features
+
+### 1. AI-Powered Documentation Generation
+- **Multi-step wizard** for generating documentation from GitHub repositories
+- **AI agents** analyze codebases and generate professional documentation
+- **Thinking preview** shows AI reasoning process
+- Supports multiple documentation types
+- Integration with backend AI services
+
+### 2. Rich Documentation Editor
+- **WYSIWYG editor** built on Tiptap/ProseMirror
+- **Code syntax highlighting** with Shiki (supports Python, Rust, JavaScript, CSS, HTML, Markdown)
+- **File tree management** with drag-and-drop support
+- **Change tracking** with undo/redo functionality
+- **Markdoc integration** for custom component rendering
+- Real-time editing with autosave
+
+### 3. Deployment & Hosting
+- **Vercel integration** for automatic deployment
+- **Custom domain** support
+- **Deployment history** tracking
+- Live documentation hosting
+- Preview environments
+
+### 4. Team Collaboration
+- **Organization/team management** with role-based access (admin, member)
+- **Email invitations** for team members
+- **Multi-user editing** capabilities
+- Team member management dashboard
+
+### 5. Analytics & Insights
+- **Visitor tracking** and page view metrics
+- **User feedback collection** (thumbs up/down)
+- **Daily trends** and performance reports
+- Multiple time ranges (7d, 30d, 90d, 1y)
+- Recharts-based visualization
+
+### 6. Branding & Customization
+- **Customizable color themes** with preset support
+- **Font selection** and management
+- **Logo and favicon** upload (Google Cloud Storage)
+- **Custom domains** for documentation sites
+- GitHub theme integration
+
+### 7. Updates Management
+- AI-powered **documentation update suggestions**
+- **PR search and integration** functionality
+- Automated update tracking
+
+---
+
+## Technology Stack
+
+### Core Framework & Runtime
+- **Next.js 15.3.8** with App Router and Turbopack support
+- **React 19.0.0** with Server Components and Actions
+- **TypeScript 5** with strict mode enabled
+
+### UI & Styling
+- **Tailwind CSS 4** with PostCSS
+- **Radix UI primitives** (@radix-ui/* components)
+- **Framer Motion** for animations
+- **Lucide React** for icons
+- **shadcn/ui** components pattern
+- **styled-components** for advanced styling
+
+### Editor & Content
+- **Tiptap 3.13.0** (ProseMirror-based rich text editor)
+- **CodeMirror** with Tokyo Night theme
+- **Shiki 3.7.0** for syntax highlighting
+- **Markdoc** for custom MDX components
+- **Content Collections** for static content management
+- **MDX** with bundler support
+
+### Database & Backend
+- **Supabase** (@supabase/supabase-js 2.56.1, @supabase/ssr 0.7.0)
+- PostgreSQL via Supabase
+- Server-side Supabase client with admin capabilities
+
+### Authentication
+- **JWT-based sessions** (jwt_session cookie)
+- **OAuth providers**: GitHub, Google
+- Custom middleware for route protection
+- Supabase Auth integration
+
+### File Storage & Management
+- **Google Cloud Storage** (@google-cloud/storage)
+- File upload and management
+- Asset hosting for logos/favicons
+
+### Data Visualization
+- **Recharts 2.15.4** for analytics charts
+- **@tanstack/react-table** for data tables
+
+### Forms & Validation
+- **React Hook Form 7.57.0** with Zod validation
+- **@hookform/resolvers** for schema integration
+
+### Additional Libraries
+- **Resend** for transactional emails
+- **ExcelJS** for data export
+- **date-fns** for date manipulation
+- **Embla Carousel** for carousels
+- **@dnd-kit** for drag-and-drop
+- **sonner** for toast notifications
+- **cmdk** for command palette
+- **vaul** for drawer components
+
+### Development Tools
+- **Biome 2.1.2** for linting and formatting
+- **ESLint 9** with Next.js config
+- **Prettier 3.0** for code formatting
+- **Docker** support with docker-compose
+- **Bundle Analyzer** for optimization
+
+---
+
+## Authentication & Security
+
+### Middleware Protection
+- **JWT session validation** with expiration checking
+- **Protected routes**: `/dashboard`, `/editor`, `/generate-docs`, `/settings`, `/analytics`, `/updates`
+- **Auth routes**: `/login`, `/signup` (redirect if authenticated)
+- Automatic redirect to login for unauthenticated access
+
+### Environment Variables Required
+
+<Callout type="warning">
+The following environment variables must be configured for the application to function properly:
+</Callout>
+
+<CodeSnippet language="bash" title=".env">
+{`NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+NEXT_PUBLIC_DEVSCRIBE_BACKEND_URL=http://127.0.0.1:8000`}
+</CodeSnippet>
+
+<Callout type="danger">
+`NEXT_PUBLIC_DEVSCRIBE_BACKEND_URL` must be set to `http://127.0.0.1:8000` (not localhost) for OAuth to work correctly.
+</Callout>
+
+---
+
+## API Integration
+
+### Internal API Routes
+- `/api/teams/[teamId]/members` - Team member management
+- `/api/teams/[teamId]/members/[memberId]` - Individual member operations
+- `/api/teams/[teamId]/invitations` - Team invitation management
+- `/api/preview-request` - Documentation preview handling
+
+### External Integrations
+- **GitHub API** for repository access and theme synchronization
+- **Vercel API** for deployment management
+- **Backend service** at `NEXT_PUBLIC_DEVSCRIBE_BACKEND_URL`
+
+---
+
+## Key Configuration Files
+
+<Callout type="info">
+These configuration files control critical aspects of the application behavior and should be reviewed when debugging issues.
+</Callout>
+
+- **next.config.ts** - Next.js configuration with content collections, Webpack customization, server actions allowed origins
+- **tsconfig.json** - TypeScript config with path aliases (`@/*` → `./src/*`)
+- **biome.json** - Code quality and formatting rules
+- **components.json** - shadcn/ui component configuration
+- **tailwind.config** - Tailwind CSS 4 configuration
+- **CLAUDE.md** - Development guidelines and coding standards
+
+---
+
+## Development Guidelines (from CLAUDE.md)
+
+<Callout type="tip">
+Follow these principles to maintain code quality and consistency across the codebase.
+</Callout>
+
+1. **Simplicity first** - Solve problems simply without adding unnecessary complexity
+2. **Modularity** - Break code into logical files and components
+3. **Clean data types** - Use structured JSON/dictionary types for all entities
+4. **Minimal UI** - Keep interfaces simple and uncluttered
+5. **Code comments** - Document code with section headers
+6. **Security** - Avoid OWASP Top 10 vulnerabilities (XSS, SQL injection, etc.)
+7. **Testing** - Perform unit testing for non-trivial logic
+8. **No backward compatibility hacks** - Delete unused code completely
+
+---
+
+## Scripts & Commands
+
+<CodeGroup>
+  <CodeSnippet language="bash" title="Development">
+{`# Development
+npm run dev              # Standard dev server
+npm run dev:turbo        # Dev with Turbopack
+npm run dev:clean        # Clean .next and start dev`}
+  </CodeSnippet>
+  
+  <CodeSnippet language="bash" title="Build & Deploy">
+{`# Build & Deploy
+npm run build            # Production build
+npm run start            # Production server`}
+  </CodeSnippet>
+  
+  <CodeSnippet language="bash" title="Code Quality">
+{`# Code Quality
+npm run lint             # ESLint
+npm run lint:fix         # Auto-fix lint issues
+npm run typecheck        # TypeScript type checking
+npm run format           # Biome formatting
+npm run format:fix       # Prettier formatting`}
+  </CodeSnippet>
+  
+  <CodeSnippet language="bash" title="Analysis & CI">
+{`# Analysis
+npm run analyze          # Bundle analysis
+npm run ci:check         # CI pipeline (build + type + lint)
+npm run clean            # Clean all generated files`}
+  </CodeSnippet>
+</CodeGroup>
+
+---
+
+## Notable Technical Decisions
+
+<Callout type="success">
+These architectural choices reflect deliberate tradeoffs for developer experience, performance, and maintainability.
+</Callout>
+
+1. **Next.js 15 App Router** with React Server Components for optimal performance
+2. **Turbopack** support for faster development builds
+3. **Content Collections** for static content management (blog, docs)
+4. **Tiptap over Draft.js** for rich text editing (better extensibility)
+5. **Supabase over custom auth** for faster iteration
+6. **Google Cloud Storage** for asset management
+7. **Vercel** as deployment platform with custom domain support
+8. **JWT sessions** stored in cookies (not localStorage) for security
+9. **Monorepo-friendly** structure with clear feature boundaries
+10. **ESLint build warnings ignored** in production for faster deployments (pragmatic approach)
+
+---
+
+## Current State & Git Info
+
+- **Current Branch**: mcp-prototyping
+- **Recent Activity**: Real updates, middleware changes, PR search bar, GitHub integration
+- **Modified Files**: `../../../utils/github.py` (backend utility)
+
+---
+
+## Testing
+
+- **Test Directory**: `/tests` (present but structure not examined in detail)
+- Tests likely cover core features, components, and utilities
+
+---
+
+## Performance Considerations
+
+<Callout type="tip">
+The application employs several optimization strategies to ensure fast load times and smooth interactions.
+</Callout>
+
+- **Server Components** used where possible to reduce client bundle
+- **Dynamic imports** for heavy components
+- **Image optimization** with Next.js Image component (Unsplash remote patterns configured)
+- **Bundle analysis** available via `npm run analyze`
+- **Sharp** for image processing
+
+---
+
+## Known Issues & Troubleshooting
+
+<Callout type="error">
+**OAuth Issue**: Must use `NEXT_PUBLIC_DEVSCRIBE_BACKEND_URL=http://127.0.0.1:8000` (not localhost) for Google/GitHub OAuth to work
+</Callout>
+
+---
+
+## Deployment
+
+<CodeSnippet language="bash" title="Docker Deployment">
+{`# Docker support with Dockerfile and docker-compose.yml
+docker-compose up -d`}
+</CodeSnippet>
+
+- **Vercel** deployment integration built-in
+- **Custom domains** configurable through settings
+- **Environment variables** must be set for all deployments
+
+---
+
+## Future Considerations
+
+<Callout type="info">
+These features are either in progress or planned based on the current directory structure.
+</Callout>
+
+- **MCP Server integration** (in settings but implementation details unclear)
+- **OpenAPI import** functionality (mentioned in settings)
+- **Theme marketplace** potential (theme-preview-handler.tsx present)
+- **Updates feature** (updates-old directory suggests refactoring in progress)
+
+---
+
+This is a mature, production-ready SaaS application with sophisticated features, strong architectural patterns, and comprehensive tooling for modern web development.
